@@ -486,9 +486,10 @@ async function geminiSRT(key,model,blob,mime){
         const msg=String((e&&e.message)||e);
         const isModelErr=/HTTP 404/.test(msg)||(/HTTP 400/.test(msg)&&/model/i.test(msg));
         const isBusy=/HTTP 503/.test(msg)||/HTTP 429/.test(msg);
-        if(!isModelErr&&!isBusy)throw e;
-        if(isBusy&&attempt===0){
-          const st=$('aiStat');if(st)st.textContent=mdl+' အလုပ်များနေသည် — ၆ စက္ကန့် စောင့်၍ ပြန်စမ်းနေသည်…';
+        const isNet=(e instanceof TypeError)||/Failed to fetch|NetworkError/i.test(msg);
+        if(!isModelErr&&!isBusy&&!isNet)throw e;
+        if((isBusy||isNet)&&attempt===0){
+          const st=$('aiStat');if(st)st.textContent=isNet?'ချိတ်ဆက်မှု ပြတ်တောက်သွားသည် — ၆ စက္ကန့် စောင့်၍ ပြန်စမ်းနေသည်…':(mdl+' အလုပ်များနေသည် — ၆ စက္ကန့် စောင့်၍ ပြန်စမ်းနေသည်…');
           await gemWait(6000);
           continue;
         }
@@ -510,14 +511,14 @@ async function genSrtFromAudio(){
     ensureAudio();
     const blob=await (await fetch(media.audioURL)).blob();
     let rawSrt='';
-    if(blob.size<=14e6){
+    if(blob.size<=8e6){
       stat.textContent='Gemini သို့ ပို့နေသည်… (အသံ တစ်ပုဒ်လုံး)';
       rawSrt=await geminiSRT(key,model,blob,blob.type||'audio/mpeg');
     }else{
       stat.textContent='အသံ ရှည်သည် — ခွဲခြမ်းစိတ်ဖြာနေသည်…';
       const buf=await decodeCurrentAudio();
-      const CH=240,total=Math.ceil(buf.duration/CH);
-      if(total>15)throw new Error('အသံ အလွန်ရှည်ပါသည် (၁ နာရီကျော်) — အပိုင်းခွဲပြီး တင်ပေးပါ');
+      const CH=180,total=Math.ceil(buf.duration/CH);
+      if(total>40)throw new Error('အသံ အလွန်ရှည်ပါသည် (၂ နာရီကျော်) — အပိုင်းခွဲပြီး တင်ပေးပါ');
       const all=[];
       for(let i=0;i<total;i++){
         stat.textContent='အပိုင်း '+(i+1)+' / '+total+' — Gemini သို့ ပို့နေသည်…';
@@ -537,7 +538,10 @@ async function genSrtFromAudio(){
     toast('AI စာတန်းထိုး '+cues.length+' ကြိမ် ရရှိပါပြီ',{type:'success',icon:'sub'});
   }catch(e){
     const raw=String((e&&e.message)||e);
-    if(/HTTP 503|HTTP 429/.test(raw)){
+    if((e instanceof TypeError)||/Failed to fetch|NetworkError/i.test(raw)){
+      stat.textContent='⚠ အင်တာနက် ချိတ်ဆက်မှု ပြတ်တောက်သွားသည် — connection ပြန်စစ်ပြီး ပြန်စမ်းပေးပါ';
+      toast('Network ပြတ်တောက်သွားသည် — ပြန်စမ်းပါ',{type:'warn',dur:6000});
+    }else if(/HTTP 503|HTTP 429/.test(raw)){
       stat.textContent='⚠ Google server အလုပ်များနေပါသည် (model အားလုံး စမ်းပြီးပါပြီ) — မိနစ် အနည်းငယ် စောင့်ပြီး ပြန်စမ်းပေးပါ';
       toast('Server အလုပ်များနေသည် — ခဏစောင့်၍ ပြန်စမ်းပါ',{type:'warn',dur:6000});
     }else{
