@@ -471,18 +471,29 @@ async function geminiCall(key,model,blob,mime){
   return parts.map(x=>x.text||'').join('').replace(/```[a-z]*\n?/gi,'').trim();
 }
 const GEM_MODELS=['gemini-3.8-flash','gemini-3.7-flash','gemini-3.6-flash','gemini-3.5-flash','gemini-2.0-flash'];
+const gemWait=ms=>new Promise(r=>setTimeout(r,ms));
 async function geminiSRT(key,model,blob,mime){
   const order=[model,...GEM_MODELS.filter(m=>m!==model)];
   let lastErr=null;
   for(const mdl of order){
-    try{
-      const txt=await geminiCall(key,mdl,blob,mime);
-      if(mdl!==model){const st=$('aiStat');if(st)st.textContent='ရွေးထားသော model မရပါ — '+mdl+' ဖြင့် ဆက်လုပ်နေသည်…';}
-      return txt;
-    }catch(e){
-      lastErr=e;
-      const msg=String((e&&e.message)||e);
-      if(!/HTTP 404/.test(msg)&&!(/HTTP 400/.test(msg)&&/model/i.test(msg)))throw e;
+    for(let attempt=0;attempt<2;attempt++){
+      try{
+        const txt=await geminiCall(key,mdl,blob,mime);
+        if(mdl!==model){const st=$('aiStat');if(st)st.textContent='ရွေးထားသော model မရပါ — '+mdl+' ဖြင့် ဆက်လုပ်နေသည်…';}
+        return txt;
+      }catch(e){
+        lastErr=e;
+        const msg=String((e&&e.message)||e);
+        const isModelErr=/HTTP 404/.test(msg)||(/HTTP 400/.test(msg)&&/model/i.test(msg));
+        const isBusy=/HTTP 503/.test(msg)||/HTTP 429/.test(msg);
+        if(!isModelErr&&!isBusy)throw e;
+        if(isBusy&&attempt===0){
+          const st=$('aiStat');if(st)st.textContent=mdl+' အလုပ်များနေသည် — ၆ စက္ကန့် စောင့်၍ ပြန်စမ်းနေသည်…';
+          await gemWait(6000);
+          continue;
+        }
+        break;
+      }
     }
   }
   throw lastErr||new Error('model မရရှိပါ');
@@ -525,8 +536,14 @@ async function genSrtFromAudio(){
     stat.textContent='✓ စာတန်း '+cues.length+' ကြိမ် ရရှိပါပြီ — စာသား စစ်ဆေးပြီးမှ Export လုပ်ပါ';
     toast('AI စာတန်းထိုး '+cues.length+' ကြိမ် ရရှိပါပြီ',{type:'success',icon:'sub'});
   }catch(e){
-    stat.textContent='⚠ မရရှိပါ: '+String((e&&e.message)||e).slice(0,150);
-    toast('AI စာတန်းထိုး မရရှိပါ — Key / quota စစ်ဆေးပါ',{type:'danger',dur:6000});
+    const raw=String((e&&e.message)||e);
+    if(/HTTP 503|HTTP 429/.test(raw)){
+      stat.textContent='⚠ Google server အလုပ်များနေပါသည် (model အားလုံး စမ်းပြီးပါပြီ) — မိနစ် အနည်းငယ် စောင့်ပြီး ပြန်စမ်းပေးပါ';
+      toast('Server အလုပ်များနေသည် — ခဏစောင့်၍ ပြန်စမ်းပါ',{type:'warn',dur:6000});
+    }else{
+      stat.textContent='⚠ မရရှိပါ: '+raw.slice(0,150);
+      toast('AI စာတန်းထိုး မရရှိပါ — Key / quota စစ်ဆေးပါ',{type:'danger',dur:6000});
+    }
   }
   btn.disabled=false;
 }
