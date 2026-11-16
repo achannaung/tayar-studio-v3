@@ -357,6 +357,18 @@ async function makeDemoAudio(){
 const media={bg:null,sp:null,logo:null,bgThumb:null,spThumb:null,logoThumb:null,
   bgName:'',spName:'',logoName:'',audioURL:null,audioName:'',isDemo:false,userAu:false,
   bgList:[],bgBlobs:[]};
+const BUILTIN_LOGO='channel-logo.webp';
+async function loadBuiltinLogo(){
+  try{
+    if(media.logo)return;
+    if(localStorage.getItem('dhamma-logo-off')==='1')return;
+    const blob=await (await fetch(BUILTIN_LOGO)).blob();
+    media.logo=wrapBmp(await loadBitmap(blob));
+    media.logoThumb=URL.createObjectURL(blob);
+    media.logoName='Dhamma by NCM — မူရင်း လိုဂို';
+    refreshMediaUI();
+  }catch(e){}
+}
 const disposers=new Map();
 /* ================= V3: export window + audio analysis ================= */
 let WIN=null;   // {start,end} active export window (trim or clip); null = full audio
@@ -441,6 +453,7 @@ async function handleImage(file,kind){
     else{disposeLater(media.logoThumb);if(media.logo)disposeLater(media.logo.url);
       media.logo=bmp;media.logoThumb=thumb;media.logoName=file.name;}
     try{idbSet('media-'+kind,file);}catch(e){}
+    if(kind==='logo')localStorage.removeItem('dhamma-logo-off');
     refreshMediaUI();
     toast('«'+file.name+'» တင်ပြီးပါပြီ',{type:'success'});
   }catch(e){toast('ပုံဖိုင် ဖတ်၍မရပါ — အခြားဖိုင် စမ်းကြည့်ပါ',{type:'danger'});}
@@ -550,7 +563,7 @@ function removeMedia(kind){
   }else if(kind==='logo'){
     if(!media.logo)return;
     const snap={logo:media.logo,logoThumb:media.logoThumb,logoName:media.logoName};
-    media.logo=null;media.logoThumb=null;media.logoName='';idbDel('media-logo');refreshMediaUI();
+    media.logo=null;media.logoThumb=null;media.logoName='';idbDel('media-logo');localStorage.setItem('dhamma-logo-off','1');refreshMediaUI();
     disposeLater(snap.logoThumb);if(snap.logo)disposeLater(snap.logo.url);
     toast('လိုဂို ဖယ်ရှားပြီးပါပြီ (ဓမ္မစက် သင်္ကေတ ပြန်သုံးသည်)',{type:'info',action:'ပြန်ယူရန်',dur:7000,onAction:()=>{
       cancelDispose(snap.logoThumb);if(snap.logo)cancelDispose(snap.logo.url);
