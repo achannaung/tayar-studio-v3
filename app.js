@@ -33,7 +33,7 @@ async function idbDel(k){try{const db=await idbOpen();
 
 /* ================= state ================= */
 const DEFAULTS={
-  title:'မေတ္တာသုတ် တရားတော်', speakerName:'ဘဒ္ဒန္တ ဝိမလ ဆရာတော်', channel:'ဓမ္မရိပ်သာ Dhamma',
+  title:'မေတ္တာသုတ် တရားတော်', speakerName:'ဘဒ္ဒန္တ ဝိမလ ဆရာတော်', channel:'Dhamma by NCM - ဓမ္မဒါန',
   showText:true, logoSize:1,
   titleSize:1, nameSize:1, titleColor:'#FFD873', nameColor:'#FFE9B8',
   titleFont:'myanmar-angoun', nameFont:'myanmar-angoun',
