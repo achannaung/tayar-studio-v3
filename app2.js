@@ -801,7 +801,7 @@ function init(){
   applyGain();
   restoreFonts();
   restoreSRT();
-  restoreMedia();
+  restoreMedia().then(()=>loadBuiltinLogo());
 
   makeDemoAudio().then(url=>{
     if(!media.userAu&&!media.audioURL)setAudio(url,'နမူနာ — ကြေးခေါင်းလောင်း သံစဉ်',true,false);
