@@ -457,7 +457,7 @@ async function wavChunk(buf,startSec,endSec,targetSr){
   for(let i=0;i<d.length;i++){const x=clamp(d[i],-1,1);v.setInt16(44+i*2,x<0?x*0x8000:x*0x7FFF,true);}
   return new Blob([ab],{type:'audio/wav'});
 }
-async function geminiSRT(key,model,blob,mime){
+async function geminiCall(key,model,blob,mime){
   const b64=await blobToB64(blob);
   const r=await fetch('https://generativelanguage.googleapis.com/v1beta/models/'+model+':generateContent',{
     method:'POST',
@@ -469,6 +469,23 @@ async function geminiSRT(key,model,blob,mime){
   const j=await r.json();
   const parts=((((j.candidates||[])[0]||{}).content||{}).parts)||[];
   return parts.map(x=>x.text||'').join('').replace(/```[a-z]*\n?/gi,'').trim();
+}
+const GEM_MODELS=['gemini-3.8-flash','gemini-3.7-flash','gemini-3.6-flash','gemini-3.5-flash','gemini-2.0-flash'];
+async function geminiSRT(key,model,blob,mime){
+  const order=[model,...GEM_MODELS.filter(m=>m!==model)];
+  let lastErr=null;
+  for(const mdl of order){
+    try{
+      const txt=await geminiCall(key,mdl,blob,mime);
+      if(mdl!==model){const st=$('aiStat');if(st)st.textContent='ရွေးထားသော model မရပါ — '+mdl+' ဖြင့် ဆက်လုပ်နေသည်…';}
+      return txt;
+    }catch(e){
+      lastErr=e;
+      const msg=String((e&&e.message)||e);
+      if(!/HTTP 404/.test(msg)&&!(/HTTP 400/.test(msg)&&/model/i.test(msg)))throw e;
+    }
+  }
+  throw lastErr||new Error('model မရရှိပါ');
 }
 async function genSrtFromAudio(){
   const key=$('inGemKey').value.trim();
