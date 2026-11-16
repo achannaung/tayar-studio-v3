@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#1C0F16">
+<link rel="manifest" href="manifest.webmanifest">
+<style>@media (max-width:640px){#btnInstall .bl{display:none}}</style>
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>တရားတော် Studio V3 — Dhamma YouTube + Shorts Video Maker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Padauk:wght@400;700&family=Noto+Sans+Myanmar:wght@400;500;600;700&family=Noto+Serif+Myanmar:wght@400;500;600;700&family=Sora:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- icon sprite -->
+<svg style="display:none" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="i-wheel" viewBox="0 0 48 48"><circle cx="24" cy="24" r="20"/><circle cx="24" cy="24" r="23" stroke-width="1" opacity=".5"/><path d="M7 24h34M24 7v34M12 12l24 24M12 36l24-24"/><circle cx="24" cy="24" r="5.5"/><circle cx="24" cy="24" r="1.6" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z"/></symbol>
+  <symbol id="i-pause" viewBox="0 0 24 24"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></symbol>
+  <symbol id="i-vol" viewBox="0 0 24 24"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 010 7M18.4 5.6a9 9 0 010 12.8"/></symbol>
+  <symbol id="i-mute" viewBox="0 0 24 24"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M22 9l-6 6M16 9l6 6"/></symbol>
+  <symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 16V4M6 10l6-6 6 6M4 20h16"/></symbol>
+  <symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5"/></symbol>
+  <symbol id="i-music" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></symbol>
+  <symbol id="i-wave" viewBox="0 0 24 24"><path d="M2 12h2M6 8v8M10 4v16M14 7v10M18 9v6M22 12h-2"/></symbol>
+  <symbol id="i-drop" viewBox="0 0 24 24"><path d="M12 2s6 6.5 6 11a6 6 0 01-12 0C6 8.5 12 2 12 2z"/></symbol>
+  <symbol id="i-film" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M7 3v18M17 3v18M3 8h4M3 16h4M17 8h4M17 16h4M7 12h10"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 4v12M6 10l6 6 6-6M4 20h16"/></symbol>
+  <symbol id="i-dice" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="8.2" cy="8.2" r="1.1" fill="currentColor" stroke="none"/><circle cx="15.8" cy="8.2" r="1.1" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.1" fill="currentColor" stroke="none"/><circle cx="8.2" cy="15.8" r="1.1" fill="currentColor" stroke="none"/><circle cx="15.8" cy="15.8" r="1.1" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-reset" viewBox="0 0 24 24"><path d="M1.5 4v6h6"/><path d="M3.8 15a9 9 0 102-9.4L1.5 10"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M5 5l14 14M19 5L5 19"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M4 12.5l5.5 5.5L20 6.5"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3L1.8 20.2h20.4L12 3z"/><path d="M12 10v4.5"/><circle cx="12" cy="17.6" r=".6" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 3l1.9 5.6L19.5 10l-5.6 1.9L12 17.5l-1.9-5.6L4.5 10l5.6-1.4L12 3z"/><path d="M19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8L19 16z"/></symbol>
+  <symbol id="i-camera" viewBox="0 0 24 24"><path d="M4 7h3l2-3h6l2 3h3a1 1 0 011 1v11a1 1 0 01-1 1H4a1 1 0 01-1-1V8a1 1 0 011-1z"/><circle cx="12" cy="13.5" r="4"/></symbol>
+  <symbol id="i-save" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.2"/><path d="M12 11v5.5"/><circle cx="12" cy="7.6" r=".7" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="4.5" y="10.5" width="15" height="10" rx="2.5"/><path d="M8 10.5V7.5a4 4 0 018 0v3"/></symbol>
+  <symbol id="i-font" viewBox="0 0 24 24"><path d="M6 20L12 4l6 16M8.6 14h6.8M4 20h4M16 20h4"/></symbol>
+  <symbol id="i-logo" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4"/><circle cx="12" cy="12" r="3.5"/></symbol>
+  <symbol id="i-sub" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M7 12h6M15.5 12h1.5M7 15.5h10"/></symbol>
+  <symbol id="i-move" viewBox="0 0 24 24"><path d="M12 2v20M2 12h20M12 2l-3 3M12 2l3 3M12 22l-3-3M12 22l3-3M2 12l3-3M2 12l3 3M22 12l-3-3M22 12l-3 3"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+  <symbol id="i-hand" viewBox="0 0 24 24"><path d="M8 13V5.5a1.5 1.5 0 013 0V12m0-6.5v-1a1.5 1.5 0 013 0V12m0-5.5a1.5 1.5 0 013 0V13m0-3a1.5 1.5 0 013 0v5a7 7 0 01-7 7h-1a7 7 0 01-6-3.5L4.6 15a1.6 1.6 0 012.6-1.8L8 14.5"/></symbol>
+</svg>
+
+<div class="grain"></div>
+
+<header>
+  <div class="brand">
+    <svg class="ic"><use href="#i-wheel"/></svg>
+    <div>
+      <h1>တရားတော် Studio V3</h1>
+      <small>Dhamma Talk → YouTube Video</small>
+    </div>
+  </div>
+  <span class="hd-chip">ဖိုင်များ သင့်စက်ထဲတွင်သာ • ၁၀၀% သီးသန့်</span>
+  <div class="hd-actions">
+    <button class="btn btn-ghost iconbtn" id="btnMute" title="အသံ ပိတ်/ဖွင့် (M)" aria-label="အသံ ပိတ်/ဖွင့်">
+      <svg class="ic"><use id="muteUseA" href="#i-vol"/></svg>
+    </button>
+    <button class="btn btn-gold" id="btnInstall" title="App အဖြစ် သွင်းရန်">📲<span class="bl"> Install app</span></button>
+    <button class="btn btn-ghost" id="btnThumbTop" title="လက်ရှိမြင်ကွင်းကို Thumbnail PNG အဖြစ် သိမ်းရန်">
+      <svg class="ic"><use href="#i-camera"/></svg><span class="bl">Thumbnail</span>
+    </button>
+    <button class="btn btn-gold" id="btnExportTop">
+      <svg class="ic"><use href="#i-film"/></svg><span>MP4 <span class="bl">Export</span></span>
+    </button>
+  </div>
+</header>
+
+<main class="app">
+  <!-- ================= STAGE ================= -->
+  <section class="stagecol">
+    <svg class="ic wheelmark"><use href="#i-wheel"/></svg>
+    <div class="chips-row reveal" style="--d:.05s">
+      <span class="chip"><i class="dot"></i> တိုက်ရိုက် ကြိုကြည့်မြင်ကွင်း</span>
+      <span class="chip"><b id="resBadge">1280 × 720</b>&nbsp;Preview</span>
+      <span class="chip"><b id="aspectBadge">16 : 9</b>&nbsp;<span id="aspectLabel">YouTube ပုံစံ</span></span>
+    </div>
+
+    <div class="frame reveal" id="frame" style="--d:.12s">
+      <canvas id="cv" width="1280" height="720"></canvas>
+      <span class="corner c-tl"></span><span class="corner c-tr"></span>
+      <span class="corner c-bl"></span><span class="corner c-br"></span>
+      <div class="frametools" id="frameTools" hidden>
+        <button id="btnAdjust" type="button" title="Touch ဖြင့် ပုံကိုဖိဆွဲညှိရန် ညှိမုဒ် ဖွင့်/ပိတ်"><svg class="ic"><use href="#i-hand"/></svg><span>ညှိမုဒ်</span></button>
+        <button id="btnSpZoomIn" type="button" title="ပုံချဲ့ရန်"><svg class="ic"><use href="#i-plus"/></svg></button>
+        <button id="btnSpZoomOut" type="button" title="ပုံချုံ့ရန်"><svg class="ic"><use href="#i-minus"/></svg></button>
+        <button id="btnSpReset" type="button" title="ပုံနေရာ မူလပြန်ထားရန်"><svg class="ic"><use href="#i-reset"/></svg></button>
+      </div>
+      <div class="recbadge" id="recBadge" hidden><i></i>REC <span id="recTime">0:00</span></div>
+      <div class="hint" id="hintPlay"><svg class="ic ic-fill"><use href="#i-play"/></svg>နမူနာအသံဖြင့် စမ်းသပ်ကြည့်ပါ</div>
+      <div class="sphint off" id="spHint"><svg class="ic"><use href="#i-move"/></svg>ပုံကို ဖိဆွဲရွှေ့ • Scroll ချဲ့ • ၂ချက်နှိပ် Reset</div>
+    </div>
+
+    <div class="transport reveal" style="--d:.2s">
+      <button class="playbtn attract" id="btnPlay" aria-label="ဖွင့် / ရပ်">
+        <svg class="ic ic-fill"><use id="playUse" href="#i-play"/></svg>
+      </button>
+      <span class="ttime" id="tCur">0:00</span>
+      <div class="seekwrap"><input type="range" id="seek" min="0" max="1000" value="0" step="1" aria-label="အချိန်ရွှေ့ရန်"></div>
+      <span class="ttime" id="tDur">0:00</span>
+      <div class="volgroup">
+        <button class="btn btn-ghost iconbtn" id="btnMuteMini" style="width:34px;height:34px" aria-label="အသံ ပိတ်/ဖွင့်">
+          <svg class="ic" style="width:16px;height:16px"><use id="muteUseB" href="#i-vol"/></svg>
+        </button>
+        <input type="range" id="vol" min="0" max="1" step="0.01" value="0.9" aria-label="အသံပမာဏ">
+        <output id="oVol">90%</output>
+      </div>
+    </div>
+
+    <div class="steps reveal" style="--d:.28s">
+      <button class="step" id="step1"><b>၁</b><span>တရားတော် အသံဖိုင် တင်ပါ</span></button>
+      <button class="step" id="step2"><b>၂</b><span>ပုံ • စာသား • လှိုင်း ပြင်ပါ</span></button>
+      <button class="step" id="step3"><b>၃</b><span>MP4 ဗီဒီယို Export လုပ်ပါ</span></button>
+    </div>
+  </section>
+
+  <!-- ================= CONTROL PANEL ================= -->
+  <aside id="panel">
+    <div class="panel-head">
+      <h2>ပြင်ဆင်မှုများ</h2>
+      <button class="btn btn-ghost iconbtn" id="btnRandom" title="ကျပန်း ဒီဇိုင်းဖန်တီးရန်"><svg class="ic"><use href="#i-dice"/></svg></button>
+      <button class="btn btn-ghost iconbtn" id="btnReset" title="မူလဒီဇိုင်း ပြန်ထားရန်"><svg class="ic"><use href="#i-reset"/></svg></button>
+    </div>
+    <div class="locknote"><svg class="ic"><use href="#i-lock"/></svg>Export လုပ်နေချိန်တွင် ပြင်ဆင်မှုများကို ခေတ္တပိတ်ထားပါသည်။</div>
+
+    <!-- media -->
+    <div class="card reveal" id="cardMedia" style="--d:.1s">
+      <h3><svg class="ic"><use href="#i-upload"/></svg>မီဒီယာ ဖိုင်များ</h3>
+
+      <label class="tile" id="tileBg" for="fileBg">
+        <input type="file" id="fileBg" accept="image/*" multiple>
+        <span class="ph"><svg class="ic"><use href="#i-image"/></svg></span>
+        <img class="thumb" id="thumbBg" alt="">
+        <span class="tmeta"><b id="nameBg">နောက်ခံပုံ</b><small id="subBg">နှိပ်၍ရွေးပါ (သို့) ဖိုင်ဆွဲချပါ • 16:9 အကောင်းဆုံး</small></span>
+        <button class="rm" id="rmBg" type="button" aria-label="နောက်ခံပုံ ဖယ်ရှားရန်"><svg class="ic"><use href="#i-x"/></svg></button>
+      </label>
+
+      <label class="tile" id="tileSp" for="fileSp">
+        <input type="file" id="fileSp" accept="image/*">
+        <span class="ph"><svg class="ic"><use href="#i-user"/></svg></span>
+        <img class="thumb" id="thumbSp" alt="">
+        <span class="tmeta"><b id="nameSp">ဆရာတော် ဓာတ်ပုံ</b><small id="subSp">နှိပ်၍ရွေးပါ (သို့) ဖိုင်ဆွဲချပါ • မျက်နှာအလယ်တွင်ပါသောပုံ</small></span>
+        <button class="rm" id="rmSp" type="button" aria-label="ဆရာတော်ပုံ ဖယ်ရှားရန်"><svg class="ic"><use href="#i-x"/></svg></button>
+      </label>
+
+      <label class="tile" id="tileLogo" for="fileLogo">
+        <input type="file" id="fileLogo" accept="image/*">
+        <span class="ph"><svg class="ic"><use href="#i-logo"/></svg></span>
+        <img class="thumb" id="thumbLogo" alt="">
+        <span class="tmeta"><b id="nameLogo">ချန်နယ် လိုဂို</b><small id="subLogo">PNG / JPG — နောက်ခံကြည်လင်သောပုံ အကောင်းဆုံး</small></span>
+        <button class="rm" id="rmLogo" type="button" aria-label="လိုဂို ဖယ်ရှားရန်"><svg class="ic"><use href="#i-x"/></svg></button>
+      </label>
+
+      <label class="tile" id="tileAu" for="fileAu">
+        <input type="file" id="fileAu" accept="audio/*">
+        <span class="ph audioico"><svg class="ic"><use href="#i-music"/></svg></span>
+        <span class="eq" id="eqAu"><i></i><i></i><i></i></span>
+        <span class="tmeta"><b id="nameAu">တရားတော် အသံဖိုင်</b><small id="subAu">MP3 / WAV / M4A — နှိပ်၍ရွေးပါ (သို့) ဖိုင်ဆွဲချပါ</small></span>
+        <button class="rm" id="rmAu" type="button" aria-label="အသံဖိုင် ဖယ်ရှားရန်"><svg class="ic"><use href="#i-x"/></svg></button>
+      </label>
+      <div class="textblock" style="margin-top:12px">
+        <div class="tb-head"><svg class="ic"><use href="#i-wave"/></svg>အသံ ပြင်ဆင်မှု — ဖြတ် / အသံညှိ</div>
+        <div class="tglrow"><span>အစ/အဆုံး တိတ်ဆိတ်မှု ဖြတ်ရန် (Export တွင်)</span>
+          <label class="tglwrap"><input type="checkbox" id="tgTrim"><span class="tgl"></span></label></div>
+        <div class="row">
+          <div class="ctl"><div class="lab"><label for="inTrimStart">စဖြတ်ချိန် (စက္ကန့်)</label></div>
+            <input class="tin" id="inTrimStart" type="number" min="0" step="0.1" value="0"></div>
+          <div class="ctl"><div class="lab"><label for="inTrimEnd">ဆုံးချိန် (စက္ကန့်၊ 0 = အဆုံး)</label></div>
+            <input class="tin" id="inTrimEnd" type="number" min="0" step="0.1" value="0"></div>
+        </div>
+        <div class="outbtns"><button class="btn btn-ghost" id="btnDetectSilence" style="flex:1">တိတ်ဆိတ်မှု အလိုအလျောက် ရှာရန်</button></div>
+        <div class="tglrow" style="margin-top:10px"><span>အသံအတိုးအကျယ် ညှိရန် (YouTube −14 LUFS)</span>
+          <label class="tglwrap"><input type="checkbox" id="tgNorm"><span class="tgl"></span></label></div>
+        <div class="subnow" id="anaStat">အသံဖိုင် တင်ပြီးလျှင် ခွဲခြမ်းစိတ်ဖြာ၍ တိတ်ဆိတ်မှုနှင့် အသံအဆင့် တိုင်းနိုင်သည်</div>
+      </div>
+    </div>
+
+    <!-- text -->
+    <div class="card reveal" id="cardText" style="--d:.16s">
+      <h3><svg class="ic"><use href="#i-spark"/></svg>ခေါင်းစဉ်နှင့် စာသား</h3>
+      <div class="ctl"><div class="lab"><label for="inTitle">တရားတော် ခေါင်းစဉ်</label></div>
+        <input class="tin" id="inTitle" maxlength="90" value="မေတ္တာသုတ် တရားတော်"></div>
+      <div class="ctl"><div class="lab"><label for="inName">ဆရာတော် အမည်</label></div>
+        <input class="tin" id="inName" maxlength="60" value="ဘဒ္ဒန္တ ဝိမလ ဆရာတော်"></div>
+      <div class="ctl"><div class="lab"><label for="inChannel">ချန်နယ် အမည်</label></div>
+        <input class="tin" id="inChannel" maxlength="40" value="ဓမ္မရိပ်သာ Dhamma"></div>
+
+      <div class="textblock">
+        <div class="tb-head"><svg class="ic"><use href="#i-font"/></svg>ခေါင်းစဉ် ပုံစံ</div>
+        <div class="ctl"><div class="lab"><label for="rgTitleSize">စာလုံး အရွယ်</label><output id="oTitleSize">×1.00</output></div>
+          <input type="range" id="rgTitleSize" min="0.6" max="1.8" step="0.05" value="1"></div>
+        <div class="ctl" style="margin-bottom:0"><div class="lab"><span>အရောင်</span></div>
+          <div class="colrow"><input type="color" id="colTitle" value="#FFD873" aria-label="ခေါင်းစဉ်အရောင်"><div class="swatches" id="swTitle"></div></div></div>
+      </div>
+
+      <div class="textblock">
+        <div class="tb-head"><svg class="ic"><use href="#i-user"/></svg>ဆရာတော် အမည် ပုံစံ</div>
+        <div class="ctl"><div class="lab"><label for="rgNameSize">စာလုံး အရွယ်</label><output id="oNameSize">×1.00</output></div>
+          <input type="range" id="rgNameSize" min="0.6" max="1.8" step="0.05" value="1"></div>
+        <div class="ctl" style="margin-bottom:0"><div class="lab"><span>အရောင်</span></div>
+          <div class="colrow"><input type="color" id="colName" value="#FFE9B8" aria-label="ဆရာတော်အမည်အရောင်"><div class="swatches" id="swName"></div></div></div>
+      </div>
+
+      <div class="ctl"><div class="lab"><label for="rgLogoSize">လိုဂို အရွယ်အစား</label><output id="oLogoSize">×1.00</output></div>
+        <input type="range" id="rgLogoSize" min="0.6" max="1.6" step="0.05" value="1"></div>
+      <div class="tglrow"><span>စာသားများ ပြသရန်</span>
+        <label class="tglwrap"><input type="checkbox" id="tgText" checked><span class="tgl"></span></label></div>
+      <div class="tglrow"><span>လိုဂို / ချန်နယ်အမည် ပြသရန်</span>
+        <label class="tglwrap"><input type="checkbox" id="tgBranding" checked><span class="tgl"></span></label></div>
+      <div class="tglrow"><span>ခေါင်းစဉ် Intro သာ (15 စက္ကန့်နောက် ဖျောက်)</span>
+        <label class="tglwrap"><input type="checkbox" id="tgTitleIntro"><span class="tgl"></span></label></div>
+    </div>
+
+    <!-- fonts -->
+    <div class="card reveal" id="cardFont" style="--d:.2s">
+      <h3><svg class="ic"><use href="#i-font"/></svg>ဖောင့် ရွေးချယ်မှု</h3>
+      <div class="ctl"><div class="lab"><label for="selTitleFont">ခေါင်းစဉ် ဖောင့်</label></div>
+        <select class="tin" id="selTitleFont"></select>
+        <div class="fpv" id="pvTitle">မေတ္တာသုတ် တရားတော်</div></div>
+      <div class="ctl"><div class="lab"><label for="selNameFont">ဆရာတော် အမည် ဖောင့်</label></div>
+        <select class="tin" id="selNameFont"></select>
+        <div class="fpv" id="pvName">ဘဒ္ဒန္တ ဝိမလ ဆရာတော်</div></div>
+
+      <label class="tile" id="tileFont" for="fileFont">
+        <input type="file" id="fileFont" accept=".ttf,.otf,.woff,.woff2,font/ttf,font/otf,font/woff,font/woff2" multiple>
+        <span class="ph"><svg class="ic"><use href="#i-font"/></svg></span>
+        <span class="tmeta"><b>ကိုယ်ပိုင်ဖောင့် တင်ရန်</b><small>TTF / OTF / WOFF — ဖိုင်များစွာ တစ်ပြိုင်နက် ရွေးနိုင်သည်</small></span>
+      </label>
+      <div class="cpresets" id="fontChips"></div>
+      <div class="emptyhint" id="fontHint">တင်ထားသော ဖောင့် မရှိသေးပါ — တင်ပြီးလျှင် အပေါ်ရွေးချယ်စာရင်းတွင် ပါလာမည်။</div>
+      <div class="note"><svg class="ic"><use href="#i-info"/></svg><span>မြန်မာ font ၁၁ မျိုး ထည့်သွင်းပြီး ဖြစ်သည် — Myanmar Black, Njaun, Pauklay, Angoun (default), Gantgaw, Thuriya, Waso, Yinmar, Sagar, Pangram, Yein။ အင်္ဂလိပ်စာ မပါသော font များအတွက် Latin ကို fallback font ဖြင့် အလိုအလျောက် ပြသည်။ ကိုယ်ပိုင်ဖောင့်များကို ဤစက်၏ ဘရောက်ဆာထဲတွင် သိမ်းထားပေးသဖြင့် နောက်တစ်ကြိမ် ဖွင့်လျှင် ပြန်ပါလာမည်။ မြန်မာယူနီကုဒ် ဖောင့်များ အကောင်းဆုံးဖြစ်သည်။</span></div>
+    </div>
+
+    <!-- wave -->
+    <div class="card reveal" style="--d:.24s">
+      <h3><svg class="ic"><use href="#i-wave"/></svg>အသံလှိုင်း ဒီဇိုင်း</h3>
+      <div class="ctl"><div class="lab"><span>လှိုင်းပုံစံ</span></div>
+        <div class="seg" id="segWave">
+          <button type="button" data-val="bars" class="on">ဘားတန်း</button>
+          <button type="button" data-val="mirror">ကြေးမုံ</button>
+          <button type="button" data-val="line">လှိုင်းမျဉ်း</button>
+          <button type="button" data-val="ring">ဓာတ်ရောင်ခြည်</button>
+        </div></div>
+      <div class="ctl"><div class="lab"><span>လှိုင်းအရောင်များ</span></div>
+        <div class="colrow">
+          <input type="color" id="colW1" value="#FFC24D" aria-label="လှိုင်းအရောင် ၁">
+          <input type="color" id="colW2" value="#FF7A3D" aria-label="လှိုင်းအရောင် ၂">
+          <div class="swatches" id="swatches"></div>
+        </div></div>
+      <div class="ctl"><div class="lab"><label for="rgWHeight">လှိုင်း အမြင့်</label><output id="oWHeight">×1.00</output></div>
+        <input type="range" id="rgWHeight" min="0.3" max="2" step="0.05" value="1"></div>
+      <div class="ctl"><div class="lab"><label for="rgWCount">ဘား အရေအတွက်</label><output id="oWCount">64</output></div>
+        <input type="range" id="rgWCount" min="24" max="96" step="4" value="64"></div>
+      <div class="ctl"><div class="lab"><label for="rgWGlow">တောက်ပမှု (Glow)</label><output id="oWGlow">70%</output></div>
+        <input type="range" id="rgWGlow" min="0" max="1" step="0.05" value="0.7"></div>
+      <div class="ctl"><div class="lab"><label for="rgWSmooth">လှုပ်ရှားမှု ချောမွေ့ခြင်း</label><output id="oWSmooth">82%</output></div>
+        <input type="range" id="rgWSmooth" min="0.5" max="0.95" step="0.01" value="0.82"></div>
+    </div>
+
+    <!-- speaker -->
+    <div class="card reveal" id="cardSp" style="--d:.28s">
+      <h3><svg class="ic"><use href="#i-user"/></svg>ဆရာတော် ဓာတ်ပုံ</h3>
+      <div class="ctl"><div class="lab"><label for="rgSpSize">စက်ဝိုင်း အရွယ်အစား</label><output id="oSpSize">×1.00</output></div>
+        <input type="range" id="rgSpSize" min="0.6" max="1.5" step="0.05" value="1"></div>
+      <div class="ctl"><div class="lab"><span>တည်နေရာ</span></div>
+        <div class="seg" id="segSpPos">
+          <button type="button" data-val="left" class="on">ဘယ်</button>
+          <button type="button" data-val="center">အလယ်</button>
+          <button type="button" data-val="right">ညာ</button>
+        </div></div>
+      <div class="ctl"><div class="lab"><span>ဘောင်ပုံစံ</span></div>
+        <div class="seg" id="segSpFrame">
+          <button type="button" data-val="gold" class="on">ရွှေကွင်း</button>
+          <button type="button" data-val="lotus">ကြာပန်း</button>
+          <button type="button" data-val="thin">ပါးလွှာ</button>
+          <button type="button" data-val="none">ဘောင်မဲ့</button>
+        </div></div>
+      <div class="ctl"><div class="lab"><label for="rgSpZoom">စက်ဝိုင်းအတွင်း ပုံချဲ့မှု</label><output id="oSpZoom">×1.00</output></div>
+        <input type="range" id="rgSpZoom" min="1" max="3" step="0.05" value="1"></div>
+      <div class="row" style="margin-bottom:11px">
+        <div class="ctl"><div class="lab"><label for="rgSpX">ဘယ် / ညာ</label><output id="oSpX">0</output></div>
+          <input type="range" id="rgSpX" min="-1" max="1" step="0.02" value="0"></div>
+        <div class="ctl"><div class="lab"><label for="rgSpY">အပေါ် / အောက်</label><output id="oSpY">-12</output></div>
+          <input type="range" id="rgSpY" min="-1" max="1" step="0.02" value="-0.12"></div>
+      </div>
+      <div class="tglrow"><span>အသက်ဝင် လှုပ်ရှားမှု (အသက်ရှူသကဲ့သို့)</span>
+        <label class="tglwrap"><input type="checkbox" id="tgBreath" checked><span class="tgl"></span></label></div>
+      <div class="note"><svg class="ic"><use href="#i-hand"/></svg><span>ကြိုကြည့်မျက်နှာပြင်ပေါ်ရှိ ဆရာတော်ပုံကို <b>ဖိဆွဲ၍ ရွှေ့</b>နိုင်၊ <b>Scroll</b> ဖြင့် ချဲ့/ချုံ့နိုင်၊ <b>နှစ်ချက်နှိပ်</b>လျှင် မူလနေရာ ပြန်ရောက်သည်။ Touch အတွက် မြင်ကွင်းထောင့်ရှိ <b>ညှိမုဒ်</b> ကို ဖွင့်ပါ။ ပုံဘောင်အပြင် မထွက်အောင် အလိုအလျောက် ထိန်းထားသည်။</span></div>
+    </div>
+
+    <!-- subtitles -->
+    <div class="card reveal" id="cardSrt" style="--d:.3s">
+      <h3><svg class="ic"><use href="#i-sub"/></svg>စာတန်းထိုး (SRT)</h3>
+      <label class="tile" id="tileSrt" for="fileSrt">
+        <input type="file" id="fileSrt" accept=".srt,.vtt,text/plain">
+        <span class="ph"><svg class="ic"><use href="#i-sub"/></svg></span>
+        <span class="tmeta"><b id="nameSrt">SRT စာတန်းဖိုင်</b><small id="subSrt">နှိပ်၍ရွေးပါ (သို့) ဖိုင်ဆွဲချပါ • .srt / .vtt</small></span>
+        <button class="rm" id="rmSrt" type="button" aria-label="စာတန်းဖိုင် ဖယ်ရှားရန်"><svg class="ic"><use href="#i-x"/></svg></button>
+      </label>
+      <div class="tglrow"><span>စာတန်းထိုး ပြသရန်</span>
+        <label class="tglwrap"><input type="checkbox" id="tgSubs" checked><span class="tgl"></span></label></div>
+      <div class="ctl"><div class="lab"><label for="rgSubSize">စာတန်း စာလုံးအရွယ်</label><output id="oSubSize">×1.00</output></div>
+        <input type="range" id="rgSubSize" min="0.7" max="1.6" step="0.05" value="1"></div>
+      <div class="ctl"><div class="lab"><label for="rgSubShift">စာတန်း အချိန် ရွှေ့ရန် (+ နောက်ကျ / − စော)</label><output id="oSubShift">0.0s</output></div>
+        <input type="range" id="rgSubShift" min="-10" max="10" step="0.5" value="0"></div>
+      <div class="ctl"><div class="lab"><span>စာတန်း အရောင်</span></div>
+        <div class="colrow"><input type="color" id="colSub" value="#FFFFFF" aria-label="စာတန်းအရောင်"></div></div>
+      <div class="ctl"><div class="lab"><label for="rgSubBg">စာတန်း နောက်ခံ မှောင်မှု</label><output id="oSubBg">68%</output></div>
+        <input type="range" id="rgSubBg" min="0" max="0.95" step="0.05" value="0.68"></div>
+      <div class="subnow" id="subNow">ဖိုင် မတင်ရသေးပါ</div>
+      <div class="note"><svg class="ic"><use href="#i-info"/></svg><span>အသံဖိုင်နှင့် အချိန်ကိုက် စာတန်းများသည် ကြိုကြည့်ချိန်နှင့် Export ဗီဒီယိုထဲတွင် အလိုအလျောက် ပါဝင်မည်။ ဖောင့်သည် “ဆရာတော် အမည် ဖောင့်” အတိုင်း သုံးသည်။</span></div>
+    </div>
+
+    <!-- shorts clips -->
+    <div class="card reveal" id="cardClips" style="--d:.32s">
+      <h3><svg class="ic"><use href="#i-film"/></svg>Shorts ဖြတ်ရန် (9:16)</h3>
+      <div class="row">
+        <div class="ctl"><div class="lab"><label for="inClipStart">စချိန် (mm:ss)</label></div>
+          <input class="tin" id="inClipStart" placeholder="0:00"></div>
+        <div class="ctl"><div class="lab"><label for="inClipEnd">ဆုံးချိန် (mm:ss)</label></div>
+          <input class="tin" id="inClipEnd" placeholder="0:45"></div>
+      </div>
+      <div class="row">
+        <div class="ctl"><button class="btn btn-ghost" id="btnMarkStart" style="width:100%">▶ လက်ရှိနေရာ = စချိန်</button></div>
+        <div class="ctl"><button class="btn btn-ghost" id="btnMarkEnd" style="width:100%">▶ လက်ရှိနေရာ = ဆုံးချိန်</button></div>
+      </div>
+      <div class="ctl"><div class="lab"><label for="inClipTitle">Clip ခေါင်းစဉ် (ချန်ထားနိုင်သည်)</label></div>
+        <input class="tin" id="inClipTitle" maxlength="90" placeholder="ချန်ထားလျှင် မူရင်းခေါင်းစဉ် သုံးမည်"></div>
+      <button class="btn btn-gold" id="btnAddClip" style="width:100%">+ Clip ထည့်ရန်</button>
+      <div id="clipList" style="margin-top:10px"></div>
+      <div class="outbtns" style="margin-top:8px"><button class="btn btn-ghost" id="btnExportAllClips" style="flex:1">Clip အားလုံး Export (အတွဲလိုက်)</button></div>
+      <div class="note"><svg class="ic"><use href="#i-info"/></svg><span>တရားရှည်ထဲက အကောင်းဆုံးအပိုင်းများကို မှတ်ပြီး 9:16 Shorts အဖြစ် တစ်ခုချင်း (စစ်ဆေး preview ပါမည်) သို့မဟုတ် အတွဲလိုက် (အလိုအလျောက် ဒေါင်းလုဒ်) ထုတ်နိုင်သည်။</span></div>
+    </div>
+
+    <!-- ai subtitles -->
+    <div class="card reveal" id="cardAi" style="--d:.33s">
+      <h3><svg class="ic"><use href="#i-spark"/></svg>အသံမှ စာတန်းထိုး အလိုအလျောက် (AI)</h3>
+      <div class="ctl"><div class="lab"><label for="inGemKey">Gemini API Key</label></div>
+        <input class="tin" id="inGemKey" type="password" placeholder="AIza… (ဤစက်ထဲတွင်သာ သိမ်းမည်)" autocomplete="off"></div>
+      <div class="ctl"><div class="lab"><label for="selGemModel">Model</label></div>
+        <select class="tin" id="selGemModel">
+          <option value="gemini-2.5-flash" selected>Gemini 2.5 Flash — မြန် / တိကျ</option>
+          <option value="gemini-2.0-flash">Gemini 2.0 Flash</option>
+          <option value="gemini-2.5-flash-lite">Gemini 2.5 Flash Lite — သက်သာ</option>
+        </select></div>
+      <button class="btn btn-gold" id="btnGenSrt" style="width:100%">အသံမှ စာတန်းထိုး ထုတ်ရန်</button>
+      <div class="subnow" id="aiStat">Key ထည့်ပြီး ခလုတ်နှိပ်ပါ — အသံရှည်လျှင် အပိုင်းခွဲ၍ ပို့ပေးမည်</div>
+      <div class="note"><svg class="ic"><use href="#i-lock"/></svg><span>Key သည် ဤစက်၏ browser ထဲတွင်သာ သိမ်းထားပြီး အသံကို Google Gemini သို့ တိုက်ရိုက် ပို့သည်။ ရလာသော စာတန်းကို SRT အဖြစ် အလိုအလျောက် ထည့်ပေးမည် — စာသား စစ်ဆေးပြီးမှ Export လုပ်ပါ။</span></div>
+    </div>
+
+    <!-- background -->
+    <div class="card reveal" style="--d:.34s">
+      <h3><svg class="ic"><use href="#i-image"/></svg>နောက်ခံ မြင်ကွင်း</h3>
+      <div class="ctl"><div class="lab"><label for="rgDark">မှောင်မိုက်မှု</label><output id="oDark">55%</output></div>
+        <input type="range" id="rgDark" min="0" max="0.9" step="0.05" value="0.55"></div>
+      <div class="ctl"><div class="lab"><label for="rgBlur">ဝါးမှု (Blur)</label><output id="oBlur">0px</output></div>
+        <input type="range" id="rgBlur" min="0" max="14" step="1" value="0"></div>
+      <div class="ctl"><div class="lab"><label for="rgVig">ထောင့်မှောင် (Vignette)</label><output id="oVig">50%</output></div>
+        <input type="range" id="rgVig" min="0" max="1" step="0.05" value="0.5"></div>
+      <div class="ctl"><div class="lab"><label for="rgParts">ရွှေအလင်းမှုန်များ</label><output id="oParts">60</output></div>
+        <input type="range" id="rgParts" min="0" max="140" step="5" value="60"></div>
+      <div class="tglrow"><span>ဖြည်းညင်းစွာ ဇူးမ်ဆွဲရန် (Ken Burns)</span>
+        <label class="tglwrap"><input type="checkbox" id="tgZoom" checked><span class="tgl"></span></label></div>
+      <div class="ctl"><div class="lab"><label for="rgSlide">နောက်ခံပုံ Slideshow လဲချိန် (0 = ပိတ်)</label><output id="oSlide">ပိတ်</output></div>
+        <input type="range" id="rgSlide" min="0" max="15" step="1" value="0"></div>
+      <div id="bgThumbs" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:2px"></div>
+      <div class="note"><svg class="ic"><use href="#i-info"/></svg><span>နောက်ခံပုံ ရွေးရာတွင် ပုံများစွာ တစ်ပြိုင်နက် ရွေးနိုင်သည် — Slideshow ဖွင့်ထားလျှင် သတ်မှတ်မိနစ်တိုင်း နောက်ပုံသို့ နူးညံ့စွာ ပြောင်းပြသည် (တရားရှည်များအတွက်)။</span></div>
+    </div>
+
+    <!-- themes -->
+    <div class="card reveal" style="--d:.4s">
+      <h3><svg class="ic"><use href="#i-drop"/></svg>အရောင် ပရီဆက်များ</h3>
+      <div class="themes" id="themes"></div>
+      <div class="outbtns" style="margin-top:11px">
+        <button class="btn btn-ghost" id="btnSavePreset" style="flex:1"><svg class="ic"><use href="#i-save"/></svg>လက်ရှိဒီဇိုင်း သိမ်းရန်</button>
+      </div>
+      <div class="cpresets" id="customPresets"></div>
+      <div class="emptyhint" id="presetHint">သိမ်းထားသော ဒီဇိုင်း မရှိသေးပါ — သိမ်းပြီးလျှင် ဤနေရာတွင် တစ်ချက်နှိပ်ဖြင့် ပြန်သုံးနိုင်သည်။</div>
+    </div>
+
+    <!-- project -->
+    <div class="card reveal" style="--d:.43s">
+      <h3><svg class="ic"><use href="#i-save"/></svg>Project သိမ်း / ပြန်တင်</h3>
+      <div class="outbtns" style="margin-top:0">
+        <button class="btn btn-ghost" id="btnSaveProject" style="flex:1"><svg class="ic"><use href="#i-save"/></svg>Project JSON ထုတ်ရန်</button>
+        <button class="btn btn-ghost" id="btnLoadProject" style="flex:1"><svg class="ic"><use href="#i-upload"/></svg>Project ပြန်တင်ရန်</button>
+      </div>
+      <input type="file" id="fileProject" accept=".json,application/json" hidden>
+      <div class="note"><svg class="ic"><use href="#i-info"/></svg><span>ပုံနှင့် အသံ (60MB အောက်) ကို ဤစက်၏ browser ထဲတွင် အလိုအလျောက် သိမ်းထားသည် — ပြန်ဖွင့်လျှင် ပြန်ပါလာမည်။ Project JSON မှာ ဒီဇိုင်း setting + SRT ပါသည်။</span></div>
+    </div>
+
+    <!-- output -->
+    <div class="card reveal" style="--d:.46s">
+      <h3><svg class="ic"><use href="#i-film"/></svg>ဗီဒီယို ထုတ်ယူခြင်း</h3>
+      <div class="ctl"><div class="lab"><span>ပုံစံ (Aspect)</span></div>
+        <div class="seg" id="segAspect">
+          <button type="button" data-val="landscape" class="on">16:9 — YouTube</button>
+          <button type="button" data-val="portrait">9:16 — Shorts</button>
+        </div></div>
+      <div class="row" style="margin-bottom:11px">
+        <div class="ctl"><div class="lab"><label for="selQuality">ကြိုကြည့် အရည်အသွေး</label></div>
+          <select class="tin" id="selQuality">
+            <option value="480">480p — ပေါ့ပါး</option>
+            <option value="720" selected>720p — HD</option>
+            <option value="1080">1080p — Full HD</option>
+          </select></div>
+        <div class="ctl"><div class="lab"><label for="selRes">Export အရည်အသွေး</label></div>
+          <select class="tin" id="selRes">
+            <option value="720">720p — HD</option>
+            <option value="1080" selected>1080p — Full HD</option>
+          </select></div>
+      </div>
+      <div class="ctl"><div class="lab"><label for="selFormat">ဖိုင်ပုံစံ</label></div>
+        <select class="tin" id="selFormat">
+          <option value="mp4" selected>MP4 (H.264 + AAC) — YouTube အကောင်းဆုံး</option>
+          <option value="webm">WebM — အရန်ပုံစံ</option>
+        </select></div>
+      <div id="codecBadge" style="font-size:11.5px;margin:4px 0 2px"></div>
+      <div class="outbtns">
+        <button class="btn btn-gold" id="btnExport"><svg class="ic"><use href="#i-film"/></svg>MP4 Export</button>
+        <button class="btn btn-ghost" id="btnThumb"><svg class="ic"><use href="#i-camera"/></svg>Thumbnail PNG</button>
+      </div>
+      <div class="outbtns" style="margin-top:8px">
+        <button class="btn btn-ghost" id="btnCopyDesc" style="flex:1"><svg class="ic"><use href="#i-save"/></svg>YouTube Description ကူးရန်</button>
+      </div>
+      <div class="note"><svg class="ic"><use href="#i-info"/></svg><span>MP4 ကို WebCodecs ဖြင့် အသံအရှည်ထက် မြန်အောင် တိုက်ရိုက် encode လုပ်သည် (မထောက်ပံ့လျှင် အချိန်နှင့်တစ်ပြေးညီ မှတ်တမ်းတင်သည့် နည်းသို့ အလိုအလျောက် ပြောင်းသည်)။ ဖိုင်အားလုံး သင့်ဘရောက်ဆာထဲတွင်သာ လုပ်ဆောင်သည်။</span></div>
+    </div>
+  </aside>
+</main>
+
+<footer>
+  <div class="pali">“သဗ္ဗဒါနံ ဓမ္မဒါနံ ဇိနာတိ” — ဓမ္မအလှူဒါနသည် အလှူဒါနအားလုံးထက် မြတ်၏</div>
+  <div>တရားတော်များကို လှပစွာ ဖြန့်ဝေမျှဝေနိုင်ပါစေ • ဆာဗာသို့ မည်သည့်ဖိုင်မျှ မပို့ပါ</div>
+  <div class="keys"><kbd>Space</kbd> ဖွင့်/ရပ် &nbsp;•&nbsp; <kbd>M</kbd> အသံပိတ်/ဖွင့် &nbsp;•&nbsp; ဆရာတော်ပုံ ဖိဆွဲ = ရွှေ့ &nbsp;•&nbsp; Scroll = ချဲ့ &nbsp;•&nbsp; ၂ချက်နှိပ် = Reset</div>
+</footer>
+
+<!-- export modal -->
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-label="ဗီဒီယို Export">
+  <div class="mcard">
+    <div id="mRec">
+      <h4 id="mTitle">ဗီဒီယို ဖန်တီးနေပါသည်…</h4>
+      <div class="sub" id="mSub">မြင်ကွင်း + အသံလှိုင်း + စာတန်းထိုး + တရားတော်အသံ တစ်ပါတည်း ပေါင်းစပ်နေသည်</div>
+      <div class="mmode" id="mMode">MP4 • H.264 + AAC</div>
+      <div class="ringwrap">
+        <svg viewBox="0 0 120 120">
+          <defs><linearGradient id="gRing" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#FFD873"/><stop offset="1" stop-color="#FF5E8A"/>
+          </linearGradient></defs>
+          <circle cx="60" cy="60" r="54" fill="none" stroke="rgba(255,190,90,.14)" stroke-width="8"/>
+          <circle id="ringFg" cx="60" cy="60" r="54" fill="none" stroke="url(#gRing)" stroke-width="8" stroke-linecap="round"
+            stroke-dasharray="339.292" stroke-dashoffset="339.292" transform="rotate(-90 60 60)"/>
+        </svg>
+        <div class="ringpct"><b id="mPct">0%</b><small>ပြီးစီးမှု</small></div>
+      </div>
+      <div class="mtime" id="mTime">0:00 / 0:00</div>
+      <div class="mtime" id="mSpeed" style="color:var(--amber);margin-top:2px"></div>
+      <div class="mnote" id="mNote">ဤတက်ဘ်ကို ဖွင့်ထားပါ။ အသံထွက်ပမာဏသည် ကြိုကြည့်ရန်သာဖြစ်ပြီး ဗီဒီယိုတွင် မူရင်းအသံ အပြည့်ပါဝင်သည်။</div>
+      <div class="mbtns"><button class="btn btn-danger" id="btnCancelRec"><svg class="ic"><use href="#i-x"/></svg>ပယ်ဖျက်ရန်</button></div>
+    </div>
+    <div id="mDone" hidden>
+      <div class="doneico"><svg class="ic"><use href="#i-check"/></svg></div>
+      <h4>ဗီဒီယို အဆင်သင့် ဖြစ်ပါပြီ!</h4>
+      <div class="mfile" id="mFile"></div>
+      <div class="msize" id="mSize"></div>
+      <video id="mPreview" controls playsinline style="width:100%;border-radius:12px;margin:8px 0;background:#000" hidden></video>
+      <div class="msize" id="mVerify" style="color:var(--amber)"></div>
+      <div class="sub" style="margin-bottom:14px">YouTube Studio တွင် တိုက်ရိုက် Upload လုပ်နိုင်ပါသည်။ ဒေါင်းလုဒ် အလိုအလျောက် စတင်ပြီးဖြစ်သည်။</div>
+      <div class="mbtns">
+        <button class="btn btn-gold" id="btnAgain"><svg class="ic"><use href="#i-download"/></svg>ထပ်မံ ဒေါင်းလုဒ်</button>
+        <button class="btn btn-ghost" id="btnCloseDone">ပိတ်ရန်</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toasts" id="toasts" aria-live="polite"></div>
+<audio id="audioEl" preload="auto"></audio>
+
+<script src="app.js"></script>
+<script src="app2.js"></script>
+<script>
+/* PWA: service worker + install prompt */
+if('serviceWorker' in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{});});}
+(function(){
+  let dp=null;const btn=document.getElementById('btnInstall');if(!btn)return;
+  const standalone=window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone;
+  if(standalone){btn.hidden=true;return;}
+  window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();dp=e;});
+  window.addEventListener('appinstalled',()=>{btn.hidden=true;dp=null;});
+  btn.addEventListener('click',async()=>{
+    if(dp){dp.prompt();try{await dp.userChoice;}catch(e){}dp=null;return;}
+    if(window.toast)toast('Chrome address bar ညာဘက်စွန်းက Install icon (သို့) ⋮ menu → "Install app / Add to Home screen" ကို နှိပ်ပါ');
+  });
+})();
+</script>
+</body>
+</html>
