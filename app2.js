@@ -470,7 +470,7 @@ async function geminiCall(key,model,blob,mime){
   const parts=((((j.candidates||[])[0]||{}).content||{}).parts)||[];
   return parts.map(x=>x.text||'').join('').replace(/```[a-z]*\n?/gi,'').trim();
 }
-const GEM_MODELS=['gemini-3.8-flash','gemini-3.7-flash','gemini-3.6-flash','gemini-3.5-flash','gemini-2.0-flash'];
+const GEM_MODELS=['gemini-4-hydrogen','gemini-3.8-flash','gemini-3.7-flash','gemini-3.6-flash','gemini-3.5-flash','gemini-2.0-flash'];
 const gemWait=ms=>new Promise(r=>setTimeout(r,ms));
 async function geminiSRT(key,model,blob,mime){
   const order=[model,...GEM_MODELS.filter(m=>m!==model)];
