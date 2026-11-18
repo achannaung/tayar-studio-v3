@@ -122,12 +122,64 @@ function videoBitrate(){
 const nextFrame=()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
 const tick=()=>new Promise(r=>setTimeout(r,0));
 
+function fbReasonText(e){
+  const m=String((e&&e.message)||e||'');
+  if(m==='slow-encoder')return 'အမြန် encoder နှေးလွန်းသည် — 720p ဖြင့် စမ်းကြည့်ပါ';
+  if(m==='no codecs')return 'ဖုန်း browser တွင် အမြန် encoder မရှိပါ';
+  if(m==='no AC')return 'အသံစနစ် မရရှိပါ';
+  if(/NotSupported|not supported/i.test(m))return 'Encoder ဆက်တင် မထောက်ပံ့ပါ';
+  return m.slice(0,100);
+}
+async function patchMp4Duration(blob,durSec){
+  const buf=await blob.arrayBuffer();
+  const dv=new DataView(buf);const u8=new Uint8Array(buf);
+  const typeAt=o=>String.fromCharCode(u8[o],u8[o+1],u8[o+2],u8[o+3]);
+  function boxSize(o){const s=dv.getUint32(o);if(s===1)return Number(dv.getBigUint64(o+8));if(s===0)return buf.byteLength-o;return s;}
+  function hdrLen(o){return dv.getUint32(o)===1?16:8;}
+  let moov=-1,moovSize=0;
+  for(let o=0;o+8<=buf.byteLength;){const sz=boxSize(o);if(sz<8)break;if(typeAt(o+4)==='moov'){moov=o;moovSize=sz;break;}o+=sz;}
+  if(moov<0)return blob;
+  let movieTs=1000;const mEnd=moov+moovSize;
+  function patchTrak(to,tsz){
+    const h0=hdrLen(to),tEnd=to+tsz;
+    for(let o=to+h0;o+8<=tEnd;){
+      const sz=boxSize(o);if(sz<8)break;const t=typeAt(o+4);const h=hdrLen(o);
+      if(t==='tkhd'){
+        if(u8[o+h]===0)dv.setUint32(o+h+20,Math.round(durSec*movieTs));
+        else if(u8[o+h]===1)dv.setBigUint64(o+h+28,BigInt(Math.round(durSec*movieTs)));
+      }
+      else if(t==='mdia'){
+        for(let q=o+h;q+8<=o+sz;){
+          const s2=boxSize(q);if(s2<8)break;const h2=hdrLen(q);
+          if(typeAt(q+4)==='mdhd'){
+            if(u8[q+h2]===0){const mts=dv.getUint32(q+h2+12)||90000;dv.setUint32(q+h2+16,Math.round(durSec*mts));}
+            else if(u8[q+h2]===1){const mts=dv.getUint32(q+h2+20)||90000;dv.setBigUint64(q+h2+24,BigInt(Math.round(durSec*mts)));}
+          }
+          q+=s2;
+        }
+      }
+      o+=sz;
+    }
+  }
+  for(let o=moov+hdrLen(moov);o+8<=mEnd;){
+    const sz=boxSize(o);if(sz<8)break;const t=typeAt(o+4);const h=hdrLen(o);
+    if(t==='mvhd'){
+      if(u8[o+h]===0){movieTs=dv.getUint32(o+h+12)||1000;dv.setUint32(o+h+16,Math.round(durSec*movieTs));}
+      else if(u8[o+h]===1){movieTs=dv.getUint32(o+h+20)||1000;dv.setBigUint64(o+h+24,BigInt(Math.round(durSec*movieTs)));}
+    }
+    else if(t==='trak')patchTrak(o,sz);
+    o+=sz;
+  }
+  return new Blob([buf],{type:'video/mp4'});
+}
 async function runExportPath(quiet){
   if(state.format==='mp4'&&window.VideoEncoder&&window.AudioEncoder){
     try{await startOfflineMP4(quiet?{quiet:true}:undefined);return true;}
     catch(e){
       if(recCancelled){cleanupOffline();return false;}
-      toast('MP4 အမြန်နည်း မရပါ — အချိန်နှင့်တစ်ပြေးညီ နည်းသို့ ပြောင်းသည်',{type:'warn',dur:6000});
+      const why=fbReasonText(e);
+      const fn=$('fbNote');if(fn){fn.style.display='block';fn.textContent='⚠ အမြန်နည်း ကျသွားသည်: '+why+' — realtime နည်းဖြင့် ထုတ်သော MP4 ကို Gallery တွင် ကြာချိန် မှားပြနိုင်ပြီး KineMaster က လက်မခံပါ။ YouTube သို့ တိုက်ရိုက် တင်ရန် အဆင်ပြေသည်။';}
+      toast('MP4 အမြန်နည်း မရပါ ('+why+') — realtime နည်းသို့ ပြောင်းသည်',{type:'warn',dur:8000});
       cleanupOffline();
     }
   }
@@ -241,11 +293,12 @@ async function startOfflineMP4(opts){
     $('mSub').textContent='ဗီဒီယို frame များ encode လုပ်နေသည်…';
     /* video */
     const total=Math.max(1,Math.ceil(wDur*fps));
-    const t0=performance.now();
+    let wdT0=0;
     for(let i=0;i<total;i++){
-      if(i===180){
-        const el=(performance.now()-t0)/1000;
-        if(el>(180/fps)*0.95)throw new Error('slow-encoder');
+      if(i===90)wdT0=performance.now();
+      if(i===390&&wdT0){
+        const rate=(390-90)/((performance.now()-wdT0)/1000);
+        if(rate<15)throw new Error('slow-encoder');
       }
       if(recCancelled||encErr)throw new Error('abort');
       RC.time=wS+i/fps;
@@ -325,7 +378,7 @@ function stopRec(){
   if(recMode==='offline'){recCancelled=true;return;}
   if(recorder&&recorder.state!=='inactive'){try{recorder.stop();}catch(e){finishRec();}}
 }
-function finishRec(){
+async function finishRec(){
   if(!state.recording||recMode!=='realtime')return;
   clearTimeout(recTimer);
   if(recStream)recStream.getVideoTracks().forEach(tr=>{try{tr.stop();}catch(e){}});
@@ -343,10 +396,14 @@ function finishRec(){
     return;
   }
   const mime=(recorder&&recorder.mimeType)||'video/webm';
-  const blob=new Blob(recChunks,{type:mime.split(';')[0]});
+  let blob=new Blob(recChunks,{type:mime.split(';')[0]});
   recorder=null;
   if(!blob.size){closeModal();if(RC.doneResolve){const r=RC.doneResolve;RC.doneResolve=null;r(null);}toast('ဗီဒီယိုဒေတာ မရရှိပါ — ထပ်မံစမ်းကြည့်ပါ',{type:'danger'});return;}
   const ext2=mime.includes('mp4')?'mp4':'webm';
+  if(ext2==='mp4'){
+    const td=WIN?(WIN.end-WIN.start):(audioEl.duration||0);
+    if(td>1){try{blob=await patchMp4Duration(blob,td);}catch(e){}}
+  }
   if(RC.quiet)downloadURL(URL.createObjectURL(blob),baseName()+'-short-'+state.exportRes+'p.'+ext2);
   else showDone(blob,ext2);
   if(RC.doneResolve){const r=RC.doneResolve;RC.doneResolve=null;r(blob);}
