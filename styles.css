@@ -356,3 +356,7 @@ footer kbd{border:1px solid var(--line2);border-radius:5px;padding:1px 6px;font-
 @font-face{font-family:'Myanmar Sagar';src:url('fonts/myanmar-sagar.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap}
 @font-face{font-family:'Pangram';src:url('fonts/pangram-my.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap;unicode-range:U+1000-109F}@font-face{font-family:'Pangram';src:url('fonts/pangram-rest.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap;unicode-range:U+0000-0FFF,U+10A0-10FF,U+1100-FFFF}
 @font-face{font-family:'Myanmar Yein';src:url('fonts/myanmar-yein-my.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap;unicode-range:U+1000-109F}@font-face{font-family:'Myanmar Yein';src:url('fonts/myanmar-yein-rest.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap;unicode-range:U+0000-0FFF,U+10A0-10FF,U+1100-FFFF}
+
+/* V3-only additions */
+button.chip{cursor:pointer;font-family:inherit}
+button.chip:active{border-color:var(--gold);color:var(--gold-hi)}

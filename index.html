@@ -217,7 +217,7 @@
         <input type="range" id="rgLogoSize" min="0.6" max="1.6" step="0.05" value="1"></div>
       <div class="tglrow"><span>စာသားများ ပြသရန်</span>
         <label class="tglwrap"><input type="checkbox" id="tgText" checked><span class="tgl"></span></label></div>
-      <div class="note"><svg class="ic"><use href="#i-hand"/></svg><span>ခေါင်းစဉ် နှင့် ဆရာတော်အမည်ကို ကြိုကြည့်မျက်နှာပြင်ပေါ်တွင် ဖိဆွဲ၍ ကြိုက်ရာ နေရာ ထားနိုင်သည် — ဖုန်းတွင် အရင် «ညှိရန်» မုဒ် ဖွင့်ပါ။</span></div>
+      <div class="note"><svg class="ic"><use href="#i-hand"/></svg><span>ခေါင်းစဉ် နှင့် ဆရာတော်အမည်ကို ကြိုကြည့်မျက်နှာပြင်ပေါ်တွင် ဖိဆွဲ၍ ကြိုက်ရာ နေရာ ထားနိုင်သည် — ဖုန်းတွင်လည်း တိုက်ရိုက် ဖိဆွဲနိုင်သည်။</span></div>
       <button class="btn btn-ghost" id="btnTxtReset" type="button" style="margin-bottom:11px">ခေါင်းစဉ် နေရာ မူလ ပြန်ထားရန်</button>
       <div class="tglrow"><span>လိုဂို / ချန်နယ်အမည် ပြသရန်</span>
         <label class="tglwrap"><input type="checkbox" id="tgBranding" checked><span class="tgl"></span></label></div>
@@ -323,8 +323,19 @@
         <div class="colrow"><input type="color" id="colSub" value="#FFFFFF" aria-label="စာတန်းအရောင်"></div></div>
       <div class="ctl"><div class="lab"><label for="rgSubBg">စာတန်း နောက်ခံ မှောင်မှု</label><output id="oSubBg">68%</output></div>
         <input type="range" id="rgSubBg" min="0" max="0.95" step="0.05" value="0.68"></div>
+      <div class="ctl"><div class="lab"><label for="selSubFont">စာတန်း ဖောင့်</label></div>
+        <select class="tin" id="selSubFont"></select></div>
+      <div class="ctl"><div class="lab"><label for="rgSubOutline">စာတန်း အစွန်း (outline) အထူ</label><output id="oSubOutline">0</output></div>
+        <input type="range" id="rgSubOutline" min="0" max="10" step="1" value="0"></div>
+      <div class="ctl"><div class="lab"><span>အစွန်း အရောင်</span></div>
+        <div class="colrow"><input type="color" id="colSubOutline" value="#000000" aria-label="စာတန်း အစွန်းအရောင်"></div></div>
+      <div class="tglrow"><span>အရိပ် (shadow) ပြရန်</span>
+        <label class="tglwrap"><input type="checkbox" id="tgSubShadow" checked><span class="tgl"></span></label></div>
+      <div class="ctl"><div class="lab"><span>စာတန်း ပုံစံနမူနာ (Templates) — နှိပ်ရုံဖြင့် သုံးနိုင်သည်</span></div>
+        <div class="chips-row" id="subPresets" style="margin-bottom:2px"></div></div>
+      <div class="outbtns" style="margin:10px 0 4px"><button class="btn btn-ghost" id="btnSrtDl" style="flex:1"><svg class="ic"><use href="#i-download"/></svg>SRT ဖိုင် ဒေါင်းလုဒ်ရန်</button></div>
       <div class="subnow" id="subNow">ဖိုင် မတင်ရသေးပါ</div>
-      <div class="note"><svg class="ic"><use href="#i-info"/></svg><span>အသံဖိုင်နှင့် အချိန်ကိုက် စာတန်းများသည် ကြိုကြည့်ချိန်နှင့် Export ဗီဒီယိုထဲတွင် အလိုအလျောက် ပါဝင်မည်။ ဖောင့်သည် “ဆရာတော် အမည် ဖောင့်” အတိုင်း သုံးသည်။</span></div>
+      <div class="note"><svg class="ic"><use href="#i-info"/></svg><span>အသံဖိုင်နှင့် အချိန်ကိုက် စာတန်းများသည် ကြိုကြည့်ချိန်နှင့် Export ဗီဒီယိုထဲတွင် အလိုအလျောက် ပါဝင်မည်။ ဖောင့်၊ အရောင်၊ အစွန်း (outline)၊ အရိပ် (shadow) တို့ကို အထက်တွင် ရွေးနိုင်ပြီး Template များလည်း သုံးနိုင်သည်။</span></div>
     </div>
 
     <!-- shorts clips -->

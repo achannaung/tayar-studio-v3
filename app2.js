@@ -696,6 +696,13 @@ function init(){
   bindRange('rgSubShift','subShift','oSubShift',v=>(v>0?'+':'')+v.toFixed(1)+'s');
   bindColor('colSub','subColor',false);
   bindRange('rgSubBg','subBg','oSubBg',pct);
+  bindRange('rgSubOutline','subOutline','oSubOutline',v=>String(Math.round(v)));
+  bindColor('colSubOutline','subOutlineColor',false);
+  bindCheck('tgSubShadow','subShadow');
+  bindSelect('selSubFont','subFont',()=>wrapCache.clear());
+  $('btnSrtDl').addEventListener('click',downloadSRT);
+  SUB_PRESETS.forEach((pr,i)=>{const b=document.createElement('button');b.type='button';b.className='chip';b.textContent=pr.name;
+    b.addEventListener('click',()=>applySubPreset(i));$('subPresets').appendChild(b);});
   bindCheck('tgTitleIntro','titleIntro');
   bindCheck('tgBranding','showBranding');
   /* V3 bindings */

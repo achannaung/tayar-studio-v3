@@ -41,7 +41,7 @@ const DEFAULTS={
   waveHeight:1, waveCount:64, waveGlow:0.7, waveSmooth:0.82,
   speakerSize:1, speakerPos:'left', speakerFrame:'gold', speakerBreath:true, showSpeaker:true,
   spZoom:1, spImgX:0, spImgY:-0.12,
-  showSubs:true, subSize:1,
+  showSubs:true, subSize:1, subFont:'', subOutline:0, subOutlineColor:'#000000', subShadow:true,
   bgDark:0.55, bgBlur:0, bgZoom:true, vignette:0.5, particles:30,
   theme:'dawn', tint:'#3A1408', particle:'#FFD98A', textCol:'#FFE9B8',
   aspect:'landscape', subShift:0, subColor:'#FFFFFF', subBg:0.68, titleIntro:false, showBranding:true,
@@ -611,6 +611,13 @@ function rebuildFontSelects(){
     if(!fontExists(state[key]))state[key]='padauk';
     sel.value=state[key];
   });
+  const ss=$('selSubFont');
+  if(ss){ss.innerHTML='';
+    const o0=document.createElement('option');o0.value='';o0.textContent='အမည် ဖောင့် အတိုင်း';ss.appendChild(o0);
+    Object.keys(BUILTIN_FONTS).forEach(k=>{const o=document.createElement('option');o.value=k;o.textContent=BUILTIN_FONTS[k].label;ss.appendChild(o);});
+    customFonts.forEach(f=>{const o=document.createElement('option');o.value=f.id;o.textContent='✦ '+f.name;ss.appendChild(o);});
+    if(state.subFont&&!fontExists(state.subFont))state.subFont='';
+    ss.value=state.subFont||'';}
   syncFontPreviews();
 }
 function renderFontChips(){
@@ -766,21 +773,54 @@ function drawSubs(){
   if(!cue)return;
   lastCueText=cue.text;
   const px=Math.round(42*state.subSize);
-  const fam=stack(state.nameFont);
+  const fam=stack(state.subFont||state.nameFont);
   ctx.font=fontB(500,px,fam);
-  const lines=getWrap(cue.text,Math.round(VW*0.84),'s'+px+state.nameFont+fontsReady);
+  const lines=getWrap(cue.text,Math.round(VW*0.84),'s'+px+(state.subFont||state.nameFont)+fontsReady);
   const lh=px*1.5,padX=36,padY=16;
   let w=0;lines.forEach(ln=>{w=Math.max(w,ctx.measureText(ln).width);});
   const h=lines.length*lh+padY*2;
   const x=VW/2-w/2-padX,y=(state.aspect==='portrait'?Math.round(VH*0.905):878)-h/2;
-  rr(ctx,x,y,w+padX*2,h,18);
-  ctx.fillStyle='rgba(8,4,10,'+(state.subBg!=null?state.subBg:0.68)+')';ctx.fill();
-  ctx.strokeStyle=rgba(state.waveColor1,0.35);ctx.lineWidth=1.5;ctx.stroke();
+  const bgA=(state.subBg!=null?state.subBg:0.68);
+  if(bgA>0.005){rr(ctx,x,y,w+padX*2,h,18);
+    ctx.fillStyle='rgba(8,4,10,'+bgA+')';ctx.fill();
+    ctx.strokeStyle=rgba(state.waveColor1,0.35);ctx.lineWidth=1.5;ctx.stroke();}
   ctx.textAlign='center';ctx.textBaseline='middle';
   ctx.fillStyle=state.subColor||'#FFFFFF';
-  ctx.shadowColor='rgba(0,0,0,.7)';ctx.shadowBlur=10*(cv.width/1920);ctx.shadowOffsetY=2*(cv.width/1920);
-  lines.forEach((ln,i)=>ctx.fillText(ln,VW/2,y+padY+lh/2+i*lh));
+  if(state.subShadow){ctx.shadowColor='rgba(0,0,0,.7)';ctx.shadowBlur=10*(cv.width/1920);ctx.shadowOffsetY=2*(cv.width/1920);}
+  else{ctx.shadowBlur=0;ctx.shadowOffsetY=0;}
+  const ol=state.subOutline||0,olScale=cv.width/1920;
+  lines.forEach((ln,i)=>{const ly=y+padY+lh/2+i*lh;
+    if(ol>0){ctx.save();ctx.shadowBlur=0;ctx.shadowOffsetY=0;ctx.lineJoin='round';ctx.miterLimit=2;
+      ctx.strokeStyle=state.subOutlineColor||'#000000';ctx.lineWidth=ol*olScale*1.8;
+      ctx.strokeText(ln,VW/2,ly);ctx.restore();}
+    ctx.fillText(ln,VW/2,ly);});
   ctx.shadowBlur=0;ctx.shadowOffsetY=0;ctx.textAlign='left';
+}
+
+/* ================= V3.1: subtitle download + style templates ================= */
+function downloadSRT(){
+  if(!srt.cues.length){toast('စာတန်း မရှိသေးပါ — အရင် SRT တင်ပါ (သို့) AI ဖြင့် ထုတ်ပါ',{type:'warn',icon:'sub'});return;}
+  const txt=srt.cues.map((c,i)=>(i+1)+'\n'+srtTs(c.start)+' --> '+srtTs(c.end)+'\n'+c.text+'\n').join('\n');
+  const base=(srt.name||'subtitles').replace(/\.(srt|vtt|txt)$/i,'');
+  const blob=new Blob([txt],{type:'text/plain;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download=base+'.srt';
+  document.body.appendChild(a);a.click();a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),4000);
+  toast('SRT ဖိုင် ဒေါင်းလုဒ် ဆွဲပြီးပါပြီ ('+srt.cues.length+' cue)',{type:'success',icon:'download'});
+}
+const SUB_PRESETS=[
+  {name:'မူလ အဖြူ',subColor:'#FFFFFF',subBg:0.68,subOutline:0,subOutlineColor:'#000000',subShadow:true,subSize:1},
+  {name:'ရွှေဝါ',subColor:'#FFCF4D',subBg:0.45,subOutline:2,subOutlineColor:'#201404',subShadow:true,subSize:1.05},
+  {name:'အဝါကြီး',subColor:'#FFE93B',subBg:0,subOutline:6,subOutlineColor:'#000000',subShadow:true,subSize:1.15},
+  {name:'အဖြူ အစွန်း',subColor:'#FFFFFF',subBg:0,subOutline:4,subOutlineColor:'#000000',subShadow:false,subSize:1},
+  {name:'ည box',subColor:'#FFFFFF',subBg:0.88,subOutline:0,subOutlineColor:'#000000',subShadow:false,subSize:0.95}
+];
+function applySubPreset(i){
+  const pr=SUB_PRESETS[i];if(!pr)return;
+  ['subColor','subBg','subOutline','subOutlineColor','subShadow','subSize'].forEach(k=>state[k]=pr[k]);
+  wrapCache.clear();syncers.forEach(f=>f());saveSoon();
+  toast('စာတန်း ပုံစံ «'+pr.name+'» သုံးပြီးပါပြီ',{type:'success',icon:'sub'});
 }
 
 /* ================= render context + offline FFT ================= */
@@ -1479,18 +1519,21 @@ function spReset(){
   rangeSync.rgSpZoom();rangeSync.rgSpX();rangeSync.rgSpY();saveSoon();
   toast('ဆရာတော်ပုံနေရာ မူလ ပြန်ထားပြီးပါပြီ',{type:'info',icon:'move'});
 }
+cv.addEventListener('touchstart',e=>{
+  if(state.recording||adjustMode)return;
+  const t=e.touches[0];if(!t)return;const p=evPos(t);
+  if(overTxt(p)||overSp(p)){cv.style.touchAction='none';e.preventDefault();}
+},{passive:false});
 cv.addEventListener('pointerdown',e=>{
   if(state.recording)return;
   if(e.pointerType==='mouse'&&e.button!==0)return;
   const p=evPos(e);
   if(!overSp(p)&&overTxt(p)){
-    if(e.pointerType!=='mouse'&&!adjustMode)return;
     txtDrag={dx:p.x-txtGeo.x,dy:p.y-txtGeo.y,id:e.pointerId};
     try{cv.setPointerCapture(e.pointerId);}catch(err){}
     cv.style.cursor='grabbing';e.preventDefault();return;
   }
   if(!overSp(p))return;
-  if(e.pointerType!=='mouse'&&!adjustMode)return;
   spDrag={x:p.x,y:p.y,id:e.pointerId};
   try{cv.setPointerCapture(e.pointerId);}catch(err){}
   cv.style.cursor='grabbing';e.preventDefault();
@@ -1514,6 +1557,7 @@ cv.addEventListener('pointermove',e=>{
 ['pointerup','pointercancel'].forEach(ev=>cv.addEventListener(ev,e=>{
   if(txtDrag&&e.pointerId===txtDrag.id)txtDrag=null;
   if(spDrag&&e.pointerId===spDrag.id){spDrag=null;cv.style.cursor=spHover?'grab':'default';}
+  if(!adjustMode)cv.style.touchAction='pan-y';
 }));
 cv.addEventListener('pointerleave',()=>{spHover=false;if(!spDrag)cv.style.cursor='default';});
 cv.addEventListener('wheel',e=>{
