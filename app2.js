@@ -670,7 +670,8 @@ function init(){
   buildTextSwatches('swName','colName','nameColor');
 
   bindText('inTitle','title');bindText('inName','speakerName');bindText('inChannel','channel');
-  bindCheck('tgText','showText');bindCheck('tgBreath','speakerBreath');bindCheck('tgSpShow','showSpeaker');bindCheck('tgZoom','bgZoom');bindCheck('tgSubs','showSubs');
+  bindCheck('tgText','showText');bindCheck('tgBreath','speakerBreath');bindCheck('tgSpShow','showSpeaker');
+  const btr=$('btnTxtReset');if(btr)btr.onclick=()=>{state.textPos=null;saveSoon();toast('ခေါင်းစဉ် နေရာ မူလ ပြန်ထားပြီးပါပြီ',{type:'info',icon:'move'});};bindCheck('tgZoom','bgZoom');bindCheck('tgSubs','showSubs');
   bindRange('rgTitleSize','titleSize','oTitleSize',v=>'×'+v.toFixed(2),()=>wrapCache.clear());
   bindRange('rgNameSize','nameSize','oNameSize',v=>'×'+v.toFixed(2),()=>wrapCache.clear());
   bindRange('rgLogoSize','logoSize','oLogoSize',v=>'×'+v.toFixed(2));

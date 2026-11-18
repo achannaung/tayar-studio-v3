@@ -46,10 +46,10 @@ const DEFAULTS={
   theme:'dawn', tint:'#3A1408', particle:'#FFD98A', textCol:'#FFE9B8',
   aspect:'landscape', subShift:0, subColor:'#FFFFFF', subBg:0.68, titleIntro:false, showBranding:true,
   quality:720, exportRes:1080, format:'mp4', volume:0.9,
-  slideMin:0, bgCount:1, trimOn:false, trimStart:0, trimEnd:0, normOn:false, clips:[]
+  slideMin:0, bgCount:1, trimOn:false, trimStart:0, trimEnd:0, normOn:false, clips:[], textPos:null
 };
 const SETTINGS=Object.keys(DEFAULTS);
-const PRESET_KEYS=SETTINGS.filter(k=>!['quality','exportRes','volume','format','aspect','subShift','clips','bgCount','trimStart','trimEnd'].includes(k));
+const PRESET_KEYS=SETTINGS.filter(k=>!['quality','exportRes','volume','format','aspect','subShift','clips','bgCount','trimStart','trimEnd','textPos'].includes(k));
 const THEMES={
   dawn:{name:'ရွှေနံနက်ခင်း', w1:'#FFC24D', w2:'#FF7A3D', tint:'#3A1408', pc:'#FFD98A', tx:'#FFE9B8'},
   night:{name:'ညသန်းခေါင်', w1:'#7C5CFF', w2:'#3EC6FF', tint:'#0E1030', pc:'#9DB4FF', tx:'#E4E9FF'},
@@ -688,28 +688,22 @@ async function restoreFonts(){
 const srt={name:'',cues:[],raw:''};
 let srtIdx=0,lastCueText='';
 function parseSRT(raw){
-  const text=String(raw).replace(/^\uFEFF/,'').replace(/\r\n?/g,'\n');
-  const blocks=text.split(/\n{2,}/);
-  const cues=[];
+  const text=String(raw).replace(/^\uFEFF/,'').replace(/```[a-z]*/gi,'').replace(/\r\n?/g,'\n');
   const ts=s=>{
-    const m=String(s).trim().match(/(?:(\d+):)?(\d{1,2}):(\d{2})[,.](\d{1,3})/);
+    const m=String(s).trim().match(/(?:(\d+):)?(\d{1,2}):(\d{2})(?:[,.](\d{1,3}))?/);
     if(!m)return null;
-    return (m[1]?+m[1]:0)*3600 + (+m[2])*60 + (+m[3]) + (+m[4].padEnd(3,'0'))/1000;
+    return (m[1]?+m[1]:0)*3600 + (+m[2])*60 + (+m[3]) + (m[4]?(+m[4].padEnd(3,'0'))/1000:0);
   };
-  for(const b of blocks){
-    const lines=b.split('\n').map(l=>l.trim()).filter(Boolean);
-    if(!lines.length)continue;
-    if(/^WEBVTT/.test(lines[0]))lines.shift();
-    if(!lines.length)continue;
-    let i=0;
-    if(/^\d+$/.test(lines[0])&&lines[1]&&lines[1].includes('-->'))i=1;
-    const tl=lines[i];
-    if(!tl||!tl.includes('-->'))continue;
-    const parts=tl.split('-->');
-    const a=ts(parts[0]),b2=ts(parts[1]);
-    if(a==null||b2==null||b2<=a)continue;
-    const txt=lines.slice(i+1).join(' ').replace(/<[^>]+>/g,'').replace(/\{[^}]*\}/g,'').trim();
-    if(txt)cues.push({start:a,end:b2,text:txt});
+  const re=/((?:\d+:)?\d{1,2}:\d{2}(?:[,.]\d{1,3})?)\s*-->\s*((?:\d+:)?\d{1,2}:\d{2}(?:[,.]\d{1,3})?)/g;
+  const hits=[];let mm;
+  while((mm=re.exec(text))!==null){const a=ts(mm[1]),b=ts(mm[2]);if(a!=null&&b!=null&&b>a)hits.push({a,b,from:mm.index,to:re.lastIndex});}
+  const cues=[];
+  for(let i=0;i<hits.length;i++){
+    const h=hits[i];
+    const seg=text.slice(h.to,i+1<hits.length?hits[i+1].from:text.length);
+    const txt=seg.split('\n').map(l=>l.trim()).filter(l=>l&&!/^\d+$/.test(l)&&!/^WEBVTT/.test(l)).join(' ')
+      .replace(/<[^>]+>/g,'').replace(/\{[^}]*\}/g,'').trim();
+    if(txt)cues.push({start:h.a,end:h.b,text:txt});
   }
   cues.sort((x,y)=>x.start-y.start);
   return cues;
@@ -984,6 +978,7 @@ function drawWaveBottom(t,n){
   }
 }
 const spGeo={cx:470,cy:470,R:268};
+let txtGeo=null,txtDrag=null;
 let spHover=false,adjustMode=false;
 function drawSpeaker(t,n){
   if(!state.showSpeaker)return;
@@ -1100,9 +1095,10 @@ function drawTexts(t){
   const portraitT=state.aspect==='portrait';
   const pos=portraitT?'center':(state.showSpeaker?state.speakerPos:'center');
   const c1=state.waveColor1,c2=state.waveColor2;
-  const align=pos==='left'?'left':pos==='right'?'right':'center';
-  const tx=portraitT?VW/2:(pos==='left'?920:pos==='right'?1000:960);
-  const maxW=portraitT?Math.round(VW*0.88):(pos==='center'?1420:880);
+  let align=pos==='left'?'left':pos==='right'?'right':'center';
+  let tx=portraitT?VW/2:(pos==='left'?920:pos==='right'?1000:960);
+  let maxW=portraitT?Math.round(VW*0.88):(pos==='center'?1420:880);
+  if(state.textPos){align='center';tx=Math.round(state.textPos.fx*VW);maxW=portraitT?Math.round(VW*0.88):Math.round(VW*0.74);}
   const titlePx=Math.round((portraitT?62:(pos==='center'?66:76))*state.titleSize);
   const namePx=Math.round((portraitT?38:44)*state.nameSize);
   const titleFam=stack(state.titleFont),nameFam=stack(state.nameFont);
@@ -1110,8 +1106,9 @@ function drawTexts(t){
   const lines=getWrap(state.title||' ',maxW,'t'+titlePx+state.titleFont);
   const lh=titlePx*1.34;
   const totalH=lines.length*lh+70+namePx;
-  const topY=portraitT?(state.showSpeaker?Math.round(VH*0.26+VW*0.30*state.speakerSize+110):Math.round(VH*0.30)):(pos==='center'?746-totalH*0.2:470-totalH/2);
-  const blockCx=pos==='left'?tx+maxW*0.42:pos==='right'?tx-maxW*0.42:VW/2;
+  let topY=portraitT?(state.showSpeaker?Math.round(VH*0.26+VW*0.30*state.speakerSize+110):Math.round(VH*0.30)):(pos==='center'?746-totalH*0.2:470-totalH/2);
+  let blockCx=pos==='left'?tx+maxW*0.42:pos==='right'?tx-maxW*0.42:VW/2;
+  if(state.textPos){topY=Math.round(state.textPos.fy*VH);blockCx=tx;}
   const blockCy=topY+totalH/2;
   ctx.save();
   ctx.translate(blockCx,blockCy);ctx.scale(maxW*0.66,totalH*0.85+110);
@@ -1120,6 +1117,7 @@ function drawTexts(t){
   ctx.fillStyle=bg;ctx.fillRect(-1,-1,2,2);
   ctx.restore();
   const showTitleBlock=state.showText&&!(state.titleIntro&&RC.dur>0&&RC.time>15);
+  txtGeo=showTitleBlock?{x:tx,y:topY,w:maxW,h:totalH}:null;
   if(showTitleBlock){
   ctx.textAlign=align;ctx.textBaseline='middle';
   const tc=state.titleColor;
@@ -1143,6 +1141,10 @@ function drawTexts(t){
   ctx.shadowColor='rgba(0,0,0,.5)';ctx.shadowBlur=10*(cv.width/1920);
   ctx.fillText(state.speakerName||'',tx,divY+40+namePx/2);
   ctx.shadowBlur=0;
+  }
+  if(txtDrag&&txtGeo&&!state.recording){
+    ctx.save();ctx.strokeStyle='rgba(255,255,255,.65)';ctx.lineWidth=2.5;ctx.setLineDash([12,9]);
+    ctx.strokeRect(txtGeo.x-txtGeo.w/2,txtGeo.y-16,txtGeo.w,txtGeo.h+32);ctx.restore();
   }
   if(state.showBranding){
   const lr=media.logo?34*state.logoSize:26;
@@ -1461,11 +1463,12 @@ let spDrag=null;
 function evPos(e){const r=cv.getBoundingClientRect();
   return{x:(e.clientX-r.left)/r.width*VW,y:(e.clientY-r.top)/r.height*VH};}
 function overSp(p){return !!media.sp&&Math.hypot(p.x-spGeo.cx,p.y-spGeo.cy)<=spGeo.R;}
+function overTxt(p){return !!(txtGeo&&Math.abs(p.x-txtGeo.x)<=txtGeo.w/2&&p.y>=txtGeo.y-16&&p.y<=txtGeo.y+txtGeo.h+16);}
 function setAdjust(on){
   adjustMode=on;
   $('btnAdjust').classList.toggle('on',on);
   cv.style.touchAction=on?'none':'pan-y';
-  if(on)toast('ညှိမုဒ် ဖွင့်ထားပါသည် — ပုံကို ဖိဆွဲ၍ ရွှေ့ပါ',{type:'info',icon:'hand',dur:3500});
+  if(on)toast('ညှိမုဒ် ဖွင့်ထားပါသည် — ခေါင်းစဉ် / ပုံကို ဖိဆွဲ၍ ရွှေ့ပါ',{type:'info',icon:'hand',dur:3500});
 }
 function spZoomBy(f){
   state.spZoom=clamp(state.spZoom*f,1,3);
@@ -1479,7 +1482,14 @@ function spReset(){
 cv.addEventListener('pointerdown',e=>{
   if(state.recording)return;
   if(e.pointerType==='mouse'&&e.button!==0)return;
-  const p=evPos(e);if(!overSp(p))return;
+  const p=evPos(e);
+  if(!overSp(p)&&overTxt(p)){
+    if(e.pointerType!=='mouse'&&!adjustMode)return;
+    txtDrag={dx:p.x-txtGeo.x,dy:p.y-txtGeo.y,id:e.pointerId};
+    try{cv.setPointerCapture(e.pointerId);}catch(err){}
+    cv.style.cursor='grabbing';e.preventDefault();return;
+  }
+  if(!overSp(p))return;
   if(e.pointerType!=='mouse'&&!adjustMode)return;
   spDrag={x:p.x,y:p.y,id:e.pointerId};
   try{cv.setPointerCapture(e.pointerId);}catch(err){}
@@ -1487,7 +1497,10 @@ cv.addEventListener('pointerdown',e=>{
 });
 cv.addEventListener('pointermove',e=>{
   const p=evPos(e);
-  if(spDrag&&e.pointerId===spDrag.id){
+  if(txtDrag&&e.pointerId===txtDrag.id){
+    state.textPos={fx:clamp((p.x-txtDrag.dx)/VW,0.12,0.88),fy:clamp((p.y-txtDrag.dy)/VH,0.02,0.82)};
+    saveSoon();
+  }else if(spDrag&&e.pointerId===spDrag.id){
     const dx=(p.x-spDrag.x)/spGeo.R,dy=(p.y-spDrag.y)/spGeo.R;
     spDrag={x:p.x,y:p.y,id:e.pointerId};
     state.spImgX=clamp(state.spImgX+dx,-1,1);
@@ -1495,10 +1508,11 @@ cv.addEventListener('pointermove',e=>{
     rangeSync.rgSpX();rangeSync.rgSpY();saveSoon();
   }else{
     spHover=overSp(p);
-    cv.style.cursor=(!state.recording&&spHover)?'grab':'default';
+    cv.style.cursor=(!state.recording&&(spHover||overTxt(p)))?'grab':'default';
   }
 });
 ['pointerup','pointercancel'].forEach(ev=>cv.addEventListener(ev,e=>{
+  if(txtDrag&&e.pointerId===txtDrag.id)txtDrag=null;
   if(spDrag&&e.pointerId===spDrag.id){spDrag=null;cv.style.cursor=spHover?'grab':'default';}
 }));
 cv.addEventListener('pointerleave',()=>{spHover=false;if(!spDrag)cv.style.cursor='default';});
