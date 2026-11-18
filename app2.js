@@ -670,7 +670,7 @@ function init(){
   buildTextSwatches('swName','colName','nameColor');
 
   bindText('inTitle','title');bindText('inName','speakerName');bindText('inChannel','channel');
-  bindCheck('tgText','showText');bindCheck('tgBreath','speakerBreath');bindCheck('tgZoom','bgZoom');bindCheck('tgSubs','showSubs');
+  bindCheck('tgText','showText');bindCheck('tgBreath','speakerBreath');bindCheck('tgSpShow','showSpeaker');bindCheck('tgZoom','bgZoom');bindCheck('tgSubs','showSubs');
   bindRange('rgTitleSize','titleSize','oTitleSize',v=>'×'+v.toFixed(2),()=>wrapCache.clear());
   bindRange('rgNameSize','nameSize','oNameSize',v=>'×'+v.toFixed(2),()=>wrapCache.clear());
   bindRange('rgLogoSize','logoSize','oLogoSize',v=>'×'+v.toFixed(2));

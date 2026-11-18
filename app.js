@@ -39,7 +39,7 @@ const DEFAULTS={
   titleFont:'myanmar-angoun', nameFont:'myanmar-angoun',
   waveStyle:'bars', waveColor1:'#FFC24D', waveColor2:'#FF7A3D',
   waveHeight:1, waveCount:64, waveGlow:0.7, waveSmooth:0.82,
-  speakerSize:1, speakerPos:'left', speakerFrame:'gold', speakerBreath:true,
+  speakerSize:1, speakerPos:'left', speakerFrame:'gold', speakerBreath:true, showSpeaker:true,
   spZoom:1, spImgX:0, spImgY:-0.12,
   showSubs:true, subSize:1,
   bgDark:0.55, bgBlur:0, bgZoom:true, vignette:0.5, particles:30,
@@ -986,6 +986,7 @@ function drawWaveBottom(t,n){
 const spGeo={cx:470,cy:470,R:268};
 let spHover=false,adjustMode=false;
 function drawSpeaker(t,n){
+  if(!state.showSpeaker)return;
   const size=state.speakerSize;
   const portraitS=state.aspect==='portrait';
   const pos=portraitS?'center':state.speakerPos;
@@ -1097,7 +1098,7 @@ function drawSpeaker(t,n){
 }
 function drawTexts(t){
   const portraitT=state.aspect==='portrait';
-  const pos=portraitT?'center':state.speakerPos;
+  const pos=portraitT?'center':(state.showSpeaker?state.speakerPos:'center');
   const c1=state.waveColor1,c2=state.waveColor2;
   const align=pos==='left'?'left':pos==='right'?'right':'center';
   const tx=portraitT?VW/2:(pos==='left'?920:pos==='right'?1000:960);
@@ -1109,7 +1110,7 @@ function drawTexts(t){
   const lines=getWrap(state.title||' ',maxW,'t'+titlePx+state.titleFont);
   const lh=titlePx*1.34;
   const totalH=lines.length*lh+70+namePx;
-  const topY=portraitT?Math.round(VH*0.26+VW*0.30*state.speakerSize+110):(pos==='center'?746-totalH*0.2:470-totalH/2);
+  const topY=portraitT?(state.showSpeaker?Math.round(VH*0.26+VW*0.30*state.speakerSize+110):Math.round(VH*0.30)):(pos==='center'?746-totalH*0.2:470-totalH/2);
   const blockCx=pos==='left'?tx+maxW*0.42:pos==='right'?tx-maxW*0.42:VW/2;
   const blockCy=topY+totalH/2;
   ctx.save();
